@@ -2,8 +2,6 @@ name: CI-CD Workflow
 
 on:
   push:
-    branches:
-      - "main"
     tags:
       - "release-*"
   pull_request:
@@ -95,7 +93,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         tag_name: ${{ github.ref_name }}
-        release_name: Release ${{ github.run_number }}
+        release_name: Release ${{ env.PROJECT_VERSION_PATCH }}
         draft: false
         prerelease: false
 
@@ -105,6 +103,6 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: build/release/helloworld-0.0.$PROJECT_VERSION_PATCH-Linux.deb
-        asset_name: helloworld-0.0.$PROJECT_VERSION_PATCH-Linux.deb
+        asset_path: build/release/helloworld-0.0.{{ env.PROJECT_VERSION_PATCH }}-Linux.deb
+        asset_name: helloworld-0.0.{{ env.PROJECT_VERSION_PATCH }}-Linux.deb
         asset_content_type: application/vnd.debian.binary-package
