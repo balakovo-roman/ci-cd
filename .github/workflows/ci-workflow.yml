@@ -14,8 +14,26 @@ env:
   PROJECT_VERSION_PATCH: ${{ github.run_number }}
 
 jobs:
+  setup-cache:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Cache APT packages
+        id: cache-apt
+        uses: awalsh128/cache-apt-pkgs-action@latest
+        with:
+          packages: |
+            cmake cmake-data libjsoncpp25 librhash0 ninja-build clang-format
+            gdb libbabeltrace1 libc6-dbg libdebuginfod-common libdebuginfod1t64 libipt2
+            libsource-highlight-common libsource-highlight4t64 valgrind
+            gcovr python3-bs4 python3-cssselect python3-html5lib python3-lxml
+            python3-soupsieve python3-webencodings
+          version: ${{ hashFiles('**/CMakePresets.json') }}
+
   check-format:
     runs-on: ubuntu-latest
+    needs: setup-cache
     steps:
       - uses: actions/checkout@v4
 
