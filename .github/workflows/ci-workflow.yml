@@ -36,7 +36,7 @@ jobs:
     needs: check-format
     strategy:
       matrix:
-        preset: [ci-asan, ci-tsan, ci-clang-tidy]
+        preset: [ci-asan, ci-tsan, ci-clang-tidy, valgrind_tests]
     steps:
       - uses: actions/checkout@v4
 
@@ -44,6 +44,10 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y cmake ninja-build g++
+
+      - name: Install Valgrind (only for valgrind_tests)
+        if: matrix.preset == 'valgrind_tests'
+        run: sudo apt-get install -y valgrind
 
       - name: Sanitizer workflow
         run: cmake --workflow --preset ${{ matrix.preset }}
